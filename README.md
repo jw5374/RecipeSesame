@@ -2,7 +2,7 @@
 Repository for Java Recipe Book Project
 
 ## Collaborators
-- Alexander Bobb
+- Alex Bobb
 - Artie Fuchs
 - Joseph Wang
 - Sophie Cui
