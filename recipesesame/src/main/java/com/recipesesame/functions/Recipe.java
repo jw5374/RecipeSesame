@@ -1,5 +1,5 @@
 package com.recipesesame.functions;
 
-public class Recipes {
+public class Recipe {
     
 }
