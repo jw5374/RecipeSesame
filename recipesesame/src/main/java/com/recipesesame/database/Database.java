@@ -1,10 +1,12 @@
 package com.recipesesame.database;
 
+import java.util.*;
+
 import com.recipesesame.functions.*;
 import com.recipesesame.utils.*;
 
 public abstract class Database {
-	public abstract Recipe[] getAllRecipes();
+	public abstract ArrayList<Recipe> getAllRecipes();
 
 	public abstract Recipe getRecipe(String id) throws RecipeNotFoundException;
 
