@@ -47,7 +47,7 @@ public class FileSystemDatabase extends Database {
 
 		// create if not exists
 		try {
-			File recipeFile = new File(folder, recipe.getID() + ".txt");
+			File recipeFile = new File(folder, recipe.getId() + ".txt");
 			recipeFile.createNewFile();
 
 			filename = recipeFile.getAbsolutePath();
