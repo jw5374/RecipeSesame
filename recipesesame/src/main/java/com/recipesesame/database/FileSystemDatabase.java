@@ -1,6 +1,7 @@
 package com.recipesesame.database;
 
 import java.io.*;
+import java.util.*;
 
 import com.recipesesame.functions.*;
 import com.recipesesame.utils.*;
@@ -17,14 +18,16 @@ public class FileSystemDatabase extends Database {
 	}
 
 	@Override
-	public Recipe[] getAllRecipes() {
+	public ArrayList<Recipe> getAllRecipes() {
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		
 		for (File regularFile : folder.listFiles()) {
 			if (!regularFile.isDirectory()) {
-				System.out.println(regularFile.getName());
+				recipes.add(Recipe.fromFile(regularFile.getName(), regularFile));
 			}
 		}
 
-		return null;
+		return recipes;
 	}
 
 	@Override
