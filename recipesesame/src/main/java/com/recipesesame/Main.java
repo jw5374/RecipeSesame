@@ -3,10 +3,14 @@ package com.recipesesame;
 import java.util.Scanner;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+
+import com.recipesesame.database.*;
 import com.recipesesame.functions.*;
 
 public class Main {
     public static void main( String[] args ) throws IOException {
+    	Database database = new FileSystemDatabase("src/main/java/com/recipesesame/recipes");
+    	
         Scanner scan = new Scanner(System.in);
         BufferedOutputStream out = new BufferedOutputStream(System.out);
         out.write("Welcome to Recipe Sesame!\n".getBytes());

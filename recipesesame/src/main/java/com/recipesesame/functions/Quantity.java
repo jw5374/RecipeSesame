@@ -19,6 +19,6 @@ public class Quantity {
 	
 	@Override
 	public String toString() {
-		return this.amount + this.measurement;
+		return this.amount + " " + this.measurement;
 	}
 }
