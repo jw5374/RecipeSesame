@@ -109,7 +109,7 @@ public class Recipe {
 		System.out.println();
 		System.out.println("Instructions: ");
 		for(int i=0; i<this.instructions.size(); i++){
-			System.out.println(this.instructions.get(i).toString()+',');
+			System.out.println((i+1)+". "this.instructions.get(i).toString());
 		}
 
 	}
