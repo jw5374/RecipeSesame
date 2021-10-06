@@ -28,6 +28,8 @@ public class Recipe {
 
 	public static Recipe fromFile(String id, File recipeFile) {
 		Recipe newRecipe = new Recipe(id);
+		
+		// parse recipe here
 
 		return newRecipe;
 	}
@@ -95,6 +97,7 @@ public class Recipe {
 	public void setInstructions(ArrayList<Step> instructions) {
 		this.instructions = instructions;
 	}
+
 	public void displayAll(){
 		System.out.println(this.title);
 		System.out.println();
@@ -111,6 +114,18 @@ public class Recipe {
 		for(int i=0; i<this.instructions.size(); i++){
 			System.out.println((i+1)+". "this.instructions.get(i).toString());
 		}
+  }
+	
+	public String getDisplayInfo() {
+		String output = "";
+		
+		output += this.title + "\n";
+		output += this.subtitle + "\n\n";
+		output += "Yields: " + this.servingSize + "\n";
+		output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
+		
+		return output;
+
 	}
 
 	@Override

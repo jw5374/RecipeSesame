@@ -19,6 +19,6 @@ public final class Ingredient {
 
 	@Override
 	public String toString() {
-		return this.quantity.toString() + this.material;
+		return this.quantity.toString() + " of " + this.material;
 	}
 }
