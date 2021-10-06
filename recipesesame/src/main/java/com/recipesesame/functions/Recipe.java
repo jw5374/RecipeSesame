@@ -97,11 +97,19 @@ public class Recipe {
 	}
 	public void displayAll(){
 		System.out.println(this.title);
+		System.out.println();
 		System.out.println(this.subtitle);
-		System.out.println("Ingredients:")
-		for(int i=0;, i<this.ingredients.size(), i++){
-			this.ingredients[i].
-			System.out.println(this.ingredients[i]+',');
+		System.out.println();
+		System.out.println("Serves: "+this.servingSize+"		Prep Time: "+this.prepTime+"		Cook Time: "+this.cookTime);
+		System.out.println();
+		System.out.println("Ingredients:");
+		for(int i=0;, i<this.ingredients.size(); i++){
+			System.out.println(this.ingredients.get(i).toString()+',');
+		}
+		System.out.println();
+		System.out.println("Instructions: ");
+		for(int i=0; i<this.instructions.size(); i++){
+			System.out.println(this.instructions.get(i).toString()+',');
 		}
 
 	}
