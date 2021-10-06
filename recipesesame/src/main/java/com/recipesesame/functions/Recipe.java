@@ -111,18 +111,8 @@ public class Recipe {
 		for(int i=0; i<this.instructions.size(); i++){
 			System.out.println((i+1)+". "this.instructions.get(i).toString());
 		}
-
 	}
-	public String getDisplayInfo() {
-	String output = "";
 
-	output += this.title + "\n";
-	output += this.subtitle + "\n\n";
-	output += "Yields: " + this.servingSize + "\n";
-	output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
-
-	return output;
-	}
 	@Override
 	public String toString() {
 		return this.id;
