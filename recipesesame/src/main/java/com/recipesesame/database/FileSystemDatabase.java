@@ -60,7 +60,7 @@ public class FileSystemDatabase extends Database {
 		try {
 			// overwrite
 			FileWriter myWriter = new FileWriter(filename);
-			myWriter.write(recipe.toString());
+			myWriter.write(recipe.getDisplayInfo());
 			myWriter.close();
 		} catch (IOException e) {
 			System.out.println("Error writing to file.");
