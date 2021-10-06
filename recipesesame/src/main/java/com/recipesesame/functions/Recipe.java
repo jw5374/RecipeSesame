@@ -106,13 +106,13 @@ public class Recipe {
 		System.out.println("Serves: "+this.servingSize+"		Prep Time: "+this.prepTime+"		Cook Time: "+this.cookTime);
 		System.out.println();
 		System.out.println("Ingredients:");
-		for(int i=0;, i<this.ingredients.size(); i++){
+		for(int i=0; i<this.ingredients.size(); i++){
 			System.out.println(this.ingredients.get(i).toString()+',');
 		}
 		System.out.println();
 		System.out.println("Instructions: ");
 		for(int i=0; i<this.instructions.size(); i++){
-			System.out.println((i+1)+". "this.instructions.get(i).toString());
+			System.out.println((i+1)+ ". " + this.instructions.get(i).toString());
 		}
   }
 	
