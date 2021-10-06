@@ -119,6 +119,7 @@ public class Recipe {
 	public String getDisplayInfo() {
 		String output = "";
 		
+		output += this.id + "\n";
 		output += this.title + "\n";
 		output += this.subtitle + "\n\n";
 		output += "Yields: " + this.servingSize + "\n";

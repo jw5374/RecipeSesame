@@ -9,20 +9,22 @@ import com.recipesesame.functions.*;
 
 public class Main {
     public static void main( String[] args ) throws IOException {
-        Database database = new FileSystemDatabase("src/main/java/com/recipesesame/recipes");
+        System.out.println(System.getProperty("user.dir"));
+        Database database = new FileSystemDatabase("RecipeSesame/recipesesame/src/main/java/com/recipesesame/recipes");
     	
         Scanner scan = new Scanner(System.in);
         BufferedOutputStream out = new BufferedOutputStream(System.out);
-        out.write("Welcome to Recipe Sesame!\n".getBytes());
-        out.write("1. Write a recipe           2. Search for a recipe\n".getBytes());
-        out.write("3. List all current recipes\n".getBytes());
-        out.write("Please enter a number or \"exit\":".getBytes());
-        out.flush();
-        String input = scan.next();
+        String input = "";
         while(input.equalsIgnoreCase("exit") != true) {
+            out.write("Welcome to Recipe Sesame!\n".getBytes());
+            out.write("1. Write a recipe           2. Search for a recipe\n".getBytes());
+            out.write("3. List all current recipes\n".getBytes());
+            out.write("Please enter a number or \"exit\":".getBytes());
+            out.flush();
+            input = scan.next();
             switch(input) {
                 case "1":
-                    out.write("This is 1 ".getBytes());
+                    Handlers.addRecipe(database, out, scan);
                     break;
                 case "2":
                     out.write("This is 2 ".getBytes());
@@ -30,11 +32,11 @@ public class Main {
                 case "3":
                     out.write(Handlers.displayAllRecipes(database).getBytes());
                     break;
+                case "exit":
+                    break;
                 default:
-                    out.write("Unrecognized command".getBytes());
+                    out.write("Unrecognized command\n".getBytes());
             }
-            out.flush();
-            input = scan.next();
 
         }
         scan.close();
