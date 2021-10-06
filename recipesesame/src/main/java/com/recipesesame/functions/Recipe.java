@@ -104,7 +104,7 @@ public class Recipe {
 		output += this.title + "\n";
 		output += this.subtitle + "\n\n";
 		output += "Yields: " + this.servingSize + "\n";
-		output += "Time: " + (this.prepTime + this.cookTime) + " minutes";
+		output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
 		
 		return output;
 	}
