@@ -113,6 +113,16 @@ public class Recipe {
 		}
 
 	}
+	public String getDisplayInfo() {
+	String output = "";
+
+	output += this.title + "\n";
+	output += this.subtitle + "\n\n";
+	output += "Yields: " + this.servingSize + "\n";
+	output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
+
+	return output;
+	}
 	@Override
 	public String toString() {
 		return this.id;
