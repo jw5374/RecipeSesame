@@ -7,15 +7,15 @@ import com.recipesesame.utils.*;
 
 public class Recipe {
 	private String id;
-	
+
 	private String title;
 	private String subtitle;
-	
+
 	private ArrayList<Ingredient> ingredients;
 	private Quantity servingSize;
 	private int prepTime;
 	private int cookTime;
-	
+
 	private ArrayList<Step> instructions;
 
 	public Recipe() {
@@ -97,6 +97,24 @@ public class Recipe {
 	public void setInstructions(ArrayList<Step> instructions) {
 		this.instructions = instructions;
 	}
+
+	public void displayAll(){
+		System.out.println(this.title);
+		System.out.println();
+		System.out.println(this.subtitle);
+		System.out.println();
+		System.out.println("Serves: "+this.servingSize+"		Prep Time: "+this.prepTime+"		Cook Time: "+this.cookTime);
+		System.out.println();
+		System.out.println("Ingredients:");
+		for(int i=0;, i<this.ingredients.size(); i++){
+			System.out.println(this.ingredients.get(i).toString()+',');
+		}
+		System.out.println();
+		System.out.println("Instructions: ");
+		for(int i=0; i<this.instructions.size(); i++){
+			System.out.println((i+1)+". "this.instructions.get(i).toString());
+		}
+  }
 	
 	public String getDisplayInfo() {
 		String output = "";
@@ -107,6 +125,7 @@ public class Recipe {
 		output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
 		
 		return output;
+
 	}
 
 	@Override
