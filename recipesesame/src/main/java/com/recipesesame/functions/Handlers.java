@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import com.recipesesame.database.*;
 
 public class Handlers {
-	public static void displayAllRecipes(Database database) {
+	public static String displayAllRecipes(Database database) {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
-		
+		String output = "";
 		for (int i = 0; i < recipes.size(); i++) {
-			System.out.println(recipes.get(i).getDisplayInfo());
+			output += recipes.get(i).getDisplayInfo() + "\n";
 		}
+		return output;
 	}
 	
 	public static void searchAllRecipes(Database database, String searchKey) {

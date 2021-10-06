@@ -28,7 +28,7 @@ public class Main {
                     out.write("This is 2 ".getBytes());
                     break;
                 case "3":
-                    out.write("This is 3 ".getBytes());
+                    out.write(Handlers.displayAllRecipes(database).getBytes());
                     break;
                 default:
                     out.write("Unrecognized command".getBytes());
