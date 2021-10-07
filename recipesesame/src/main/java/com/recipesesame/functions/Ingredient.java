@@ -1,6 +1,12 @@
 package com.recipesesame.functions;
 
-public final class Ingredient {
+import java.io.Serializable;
+
+public final class Ingredient implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Quantity quantity;
 	private String material;
 

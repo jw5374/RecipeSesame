@@ -5,7 +5,12 @@ import java.util.*;
 
 import com.recipesesame.utils.*;
 
-public class Recipe implements Serializable{
+public class Recipe implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 
 	private String title;

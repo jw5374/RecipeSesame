@@ -1,8 +1,14 @@
 package com.recipesesame.functions;
 
+import java.io.Serializable;
+
 // import java.util.*;
 
-public class Step {
+public class Step implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String step;
 	// private ArrayList<Ingredient> usedIngredients;
 	

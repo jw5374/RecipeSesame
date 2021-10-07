@@ -10,7 +10,7 @@ import com.recipesesame.functions.*;
 public class Main {
     public static void main( String[] args ) throws IOException, ClassNotFoundException {
         System.out.println(System.getProperty("user.dir"));
-        Database database = new FileSystemDatabase("RecipeSesame/recipesesame/src/main/java/com/recipesesame/recipes");
+        Database database = new FileSystemDatabase("src/main/java/com/recipesesame/recipes");
     	
         Scanner scan = new Scanner(System.in);
         BufferedOutputStream out = new BufferedOutputStream(System.out);
@@ -27,6 +27,8 @@ public class Main {
                     Handlers.addRecipe(database, out, scan);
                     break;
                 case "2":
+                	String searchKey = scan.nextLine();
+                	Handlers.searchAllRecipes(database, searchKey, out);
                     out.write("This is 2 ".getBytes());
                     break;
                 case "3":
