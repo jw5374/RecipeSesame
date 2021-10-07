@@ -125,7 +125,7 @@ public class Recipe {
 		System.out.println();
 		System.out.println(this.instructions.get(stepNum).toString());
 		this.stepNum++;
-		if(this.stepNum > this.instructions.size()){
+		if(this.stepNum >= this.instructions.size()){
 			this.stepNum = 0;
 		}
 	}
