@@ -8,7 +8,7 @@ import com.recipesesame.database.*;
 import com.recipesesame.functions.*;
 
 public class Main {
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args ) throws IOException, ClassNotFoundException {
         System.out.println(System.getProperty("user.dir"));
         Database database = new FileSystemDatabase("RecipeSesame/recipesesame/src/main/java/com/recipesesame/recipes");
     	

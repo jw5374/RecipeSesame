@@ -26,10 +26,17 @@ public class Recipe implements Serializable{
 		this.id = id;
 	}
 
-	public static Recipe fromFile(String id, File recipeFile) {
-		Recipe newRecipe = new Recipe(id);
-		
-		// parse recipe here
+	public static Recipe fromFile(String id, File recipeFile) throws IOException, ClassNotFoundException {		
+		FileInputStream fileIn = new FileInputStream(recipeFile);
+		ObjectInputStream objIn = new ObjectInputStream(fileIn);
+
+		Recipe newRecipe = (Recipe) objIn.readObject();
+
+		//testing
+		System.out.println("Recipe ID: " + newRecipe.getId());
+		System.out.println("Recipe Title: " + newRecipe.getTitle());
+
+		objIn.close();
 
 		return newRecipe;
 	}

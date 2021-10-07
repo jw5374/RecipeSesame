@@ -18,15 +18,13 @@ public class FileSystemDatabase extends Database {
 	}
 
 	@Override
-	public ArrayList<Recipe> getAllRecipes() throws RecipeNotFoundException {
+	public ArrayList<Recipe> getAllRecipes() throws ClassNotFoundException, IOException {
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 
 		for (File regularFile : folder.listFiles()) {
 			if (!regularFile.isDirectory()) {
 				String fileName = regularFile.getName();
-				if (fileName.equals("recipes.txt")) continue;
-					//get rid of .txt in fileName
-				else recipes.add(getRecipe(fileName.substring(0, fileName.length() - 4)));
+				recipes.add(Recipe.fromFile(regularFile.getName(), regularFile));
 			}
 		}
 
@@ -35,31 +33,19 @@ public class FileSystemDatabase extends Database {
 
 
 	@Override
-	public Recipe getRecipe(String id) throws RecipeNotFoundException {
-		try{
-			File file = new File("recipesesame/src/main/java/com/recipesesame/recipes/" + id + ".txt");
-			FileInputStream fileIn = new FileInputStream(file);
-			ObjectInputStream objIn = new ObjectInputStream(fileIn);
-
-			Recipe newRecipe = (Recipe) objIn.readObject();
-
-			//testing
-			System.out.println("Recipe ID: " + newRecipe.getId());
-			System.out.println("Recipe Title: " + newRecipe.getTitle());
-
-			objIn.close();
-
-			return newRecipe;
-		} catch (Exception e){
-			System.out.println("No recipe found :(");
-			return null;
+	public Recipe getRecipe(String id) throws RecipeNotFoundException, ClassNotFoundException, IOException {
+		File recipe = new File(folder, id + ".txt");
+		if (!recipe.exists()) {
+			System.out.println("Error opening file.");
+			throw new RecipeNotFoundException();
 		}
+		return Recipe.fromFile(id, recipe);
 	}
 
 	@Override
 	public boolean writeRecipe(Recipe recipe) {
 		try {
-			File file = new File("recipesesame/src/main/java/com/recipesesame/recipes/" + recipe.getId() + ".txt");
+			File file = new File(folder, recipe.getId() + ".txt");
 			FileOutputStream fos = new FileOutputStream(file);
 			if (!file.exists()) { file.createNewFile(); }
 
