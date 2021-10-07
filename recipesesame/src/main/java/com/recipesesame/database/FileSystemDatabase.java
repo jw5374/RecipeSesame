@@ -18,56 +18,64 @@ public class FileSystemDatabase extends Database {
 	}
 
 	@Override
-	public ArrayList<Recipe> getAllRecipes() {
+	public ArrayList<Recipe> getAllRecipes() throws RecipeNotFoundException {
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-		
+
 		for (File regularFile : folder.listFiles()) {
 			if (!regularFile.isDirectory()) {
-				recipes.add(Recipe.fromFile(regularFile.getName(), regularFile));
+				String fileName = regularFile.getName();
+				if (fileName.equals("recipes.txt")) continue;
+					//get rid of .txt in fileName
+				else recipes.add(getRecipe(fileName.substring(0, fileName.length() - 4)));
 			}
 		}
 
 		return recipes;
 	}
 
+
 	@Override
 	public Recipe getRecipe(String id) throws RecipeNotFoundException {
-		File recipe = new File(folder, id + ".txt");
-		if (!recipe.exists()) {
-			System.out.println("Error opening file.");
-			throw new RecipeNotFoundException();
-		}
+		try{
+			File file = new File("recipesesame/src/main/java/com/recipesesame/recipes/" + id + ".txt");
+			FileInputStream fileIn = new FileInputStream(file);
+			ObjectInputStream objIn = new ObjectInputStream(fileIn);
 
-		return Recipe.fromFile(id, recipe);
+			Recipe newRecipe = (Recipe) objIn.readObject();
+
+			//testing
+			System.out.println("Recipe ID: " + newRecipe.getId());
+			System.out.println("Recipe Title: " + newRecipe.getTitle());
+
+			objIn.close();
+
+			return newRecipe;
+		} catch (Exception e){
+			System.out.println("No recipe found :(");
+			return null;
+		}
 	}
 
 	@Override
 	public boolean writeRecipe(Recipe recipe) {
-		String filename = "";
-
-		// create if not exists
 		try {
-			File recipeFile = new File(folder, recipe.getId() + ".txt");
-			recipeFile.createNewFile();
+			File file = new File("recipesesame/src/main/java/com/recipesesame/recipes/" + recipe.getId() + ".txt");
+			FileOutputStream fos = new FileOutputStream(file);
+			if (!file.exists()) { file.createNewFile(); }
 
-			filename = recipeFile.getAbsolutePath();
-		} catch (IOException e) {
-			System.out.println("Error creating file.");
-			e.printStackTrace();
+
+			ObjectOutputStream objOut = new ObjectOutputStream(fos);
+			// Writes objects to the output stream
+			objOut.writeObject(recipe);
+			objOut.close();
+			return true;
+
+		}
+		catch (Exception e) {
+			e.getStackTrace();
+			System.out.println("Could not write to file :(");
 			return false;
 		}
 
-		try {
-			// overwrite
-			FileWriter myWriter = new FileWriter(filename);
-			myWriter.write(recipe.getDisplayInfo());
-			myWriter.close();
-		} catch (IOException e) {
-			System.out.println("Error writing to file.");
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
 	}
 }

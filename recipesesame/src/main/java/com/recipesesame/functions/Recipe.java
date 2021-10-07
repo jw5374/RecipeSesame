@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.recipesesame.utils.*;
 
-public class Recipe {
+public class Recipe implements Serializable{
 	private String id;
 
 	private String title;

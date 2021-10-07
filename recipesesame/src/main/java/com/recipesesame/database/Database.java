@@ -6,7 +6,7 @@ import com.recipesesame.functions.*;
 import com.recipesesame.utils.*;
 
 public abstract class Database {
-	public abstract ArrayList<Recipe> getAllRecipes();
+	public abstract ArrayList<Recipe> getAllRecipes() throws RecipeNotFoundException;
 
 	public abstract Recipe getRecipe(String id) throws RecipeNotFoundException;
 
