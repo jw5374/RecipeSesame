@@ -3,28 +3,67 @@ package com.recipesesame.functions;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 import com.recipesesame.database.*;
 
 public class Handlers {
-	public static String displayAllRecipes(Database database) {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
+	private static void printOutRecipes(ArrayList<Recipe> recipes, BufferedOutputStream out) throws IOException {
 		String output = "";
 		for (int i = 0; i < recipes.size(); i++) {
-			output += recipes.get(i).getDisplayInfo() + "\n";
+			out.write((recipes.get(i).getDisplayInfo() + "\n").getBytes());
 		}
-		return output;
+	}
+	
+	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException {
+		ArrayList<Recipe> recipes = database.getAllRecipes();
+		printOutRecipes(recipes, out);
+	}
+	
+	public static void displayAllSortedRecipes(Database database, SortedBy sortKey, BufferedOutputStream out) throws IOException {
+		ArrayList<Recipe> recipes = database.getAllRecipes();
+		
+		switch (sortKey) {
+		case COOKTIME:
+			recipes.sort(Comparator.comparing(Recipe::getCookTime));
+			break;
+		case PREPTIME:
+			recipes.sort(Comparator.comparing(Recipe::getPrepTime));
+			break;
+		case TOTALTIME:
+			Collections.sort(recipes, (recipe1, recipe2) -> {
+				return Integer.compare(
+					recipe1.getCookTime() + recipe1.getPrepTime(), 
+					recipe2.getCookTime() + recipe1.getPrepTime()
+				); 
+			});
+		case SERVINGSIZE:
+			Collections.sort(recipes, (recipe1, recipe2) -> {
+				return Integer.compare(
+					recipe1.getServingSize().getAmount(),
+					recipe2.getServingSize().getAmount()
+				); 
+			});
+			break;
+		case TITLE:
+			recipes.sort(Comparator.comparing(Recipe::getTitle));
+			break;
+		default:
+			recipes.sort(Comparator.comparing(Recipe::getTitle));
+			break;
+		}
+		
+		printOutRecipes(recipes, out);
 	}
 	
 	public static void searchAllRecipes(Database database, String searchKey, BufferedOutputStream out) throws IOException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
 		
 		recipes.removeIf(r -> !r.getTitle().toLowerCase().contains(searchKey.toLowerCase()));
-		
-		for (int i = 0; i < recipes.size(); i++) {
-			out.write((recipes.get(i).getDisplayInfo() + "\n").getBytes());
-		}
+
+		printOutRecipes(recipes, out);
 	}
 
 	public static void addRecipe(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
