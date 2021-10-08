@@ -38,8 +38,8 @@ public class Recipe implements Serializable {
 		Recipe newRecipe = (Recipe) objIn.readObject();
 
 		//testing
-		System.out.println("Recipe ID: " + newRecipe.getId());
-		System.out.println("Recipe Title: " + newRecipe.getTitle());
+		// System.out.println("Recipe ID: " + newRecipe.getId());
+		// System.out.println("Recipe Title: " + newRecipe.getTitle());
 
 		objIn.close();
 
@@ -110,22 +110,26 @@ public class Recipe implements Serializable {
 		this.instructions = instructions;
 	}
 
-	public void displayAll(){
-		System.out.println(this.title);
-		System.out.println();
-		System.out.println(this.subtitle);
-		System.out.println();
-		System.out.println("Serves: "+this.servingSize+"		Prep Time: "+this.prepTime+"		Cook Time: "+this.cookTime);
-		System.out.println();
-		System.out.println("Ingredients:");
+	public String displayAll() {
+		String output = "";
+		output += (this.id + "\n");
+		output += (this.title + "\n");
+		output += (this.subtitle + "\n");
+		output += ("Serves: " + 
+				this.servingSize + 
+				"		Prep Time: " + 
+				this.prepTime + 
+				"		Cook Time: " + 
+				this.cookTime + "\n");
+		output += "Ingredients: \n";
 		for(int i=0; i<this.ingredients.size(); i++){
-			System.out.println(this.ingredients.get(i).toString()+',');
+			output += (this.ingredients.get(i).toString()+',' + "\n");
 		}
-		System.out.println();
-		System.out.println("Instructions: ");
+		output += "Instructions: \n";
 		for(int i=0; i<this.instructions.size(); i++){
-			System.out.println((i+1)+ ". " + this.instructions.get(i).toString());
+			output += ((i+1)+ ". " + this.instructions.get(i).toString() + "\n");
 		}
+		return output;
   }
 	public void displayNextStep(){
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
@@ -141,7 +145,7 @@ public class Recipe implements Serializable {
 		output += this.id + "\n";
 		output += this.title + "\n";
 		output += this.subtitle + "\n\n";
-		output += "Yields: " + this.servingSize + "\n";
+		output += "Serves: " + this.servingSize + "\n";
 		output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
 
 		return output;

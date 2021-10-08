@@ -6,9 +6,10 @@ import java.io.IOException;
 
 import com.recipesesame.database.*;
 import com.recipesesame.functions.*;
+import com.recipesesame.utils.RecipeNotFoundException;
 
 public class Main {
-    public static void main( String[] args ) throws IOException, ClassNotFoundException {
+    public static void main( String[] args ) throws IOException, ClassNotFoundException, RecipeNotFoundException {
         System.out.println(System.getProperty("user.dir"));
         Database database = new FileSystemDatabase("src/main/java/com/recipesesame/recipes");
     	
@@ -19,7 +20,7 @@ public class Main {
             out.write("Welcome to Recipe Sesame!\n".getBytes());
             out.write("1. Write a recipe           2. Search for a recipe\n".getBytes());
             out.write("3. List all current recipes\n".getBytes());
-            out.write("Please enter a number or \"exit\":".getBytes());
+            out.write("Please enter a number or \"exit\": ".getBytes());
             out.flush();
             input = scan.next();
             switch(input) {
@@ -27,12 +28,14 @@ public class Main {
                     Handlers.addRecipe(database, out, scan);
                     break;
                 case "2":
+                    scan.nextLine();
                 	String searchKey = scan.nextLine();
-                	Handlers.searchAllRecipes(database, searchKey, out);
-                    out.write("This is 2 ".getBytes());
+                    Handlers.searchAllRecipes(database, searchKey, out);
+                	Handlers.exploreRecipes(database, scan);
                     break;
                 case "3":
                     Handlers.displayAllRecipes(database, out);
+                    Handlers.exploreRecipes(database, scan);
                     break;
                 case "exit":
                     break;
