@@ -8,13 +8,14 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 import com.recipesesame.database.*;
+import com.recipesesame.utils.RecipeNotFoundException;
 
 public class Handlers {
 	private static void printOutRecipes(ArrayList<Recipe> recipes, BufferedOutputStream out) throws IOException {
-		String output = "";
 		for (int i = 0; i < recipes.size(); i++) {
 			out.write((recipes.get(i).getDisplayInfo() + "\n").getBytes());
 		}
+		out.flush();
 	}
 	
 	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException, ClassNotFoundException {
@@ -66,6 +67,31 @@ public class Handlers {
 		printOutRecipes(recipes, out);
 	}
 
+	public static void exploreRecipes(Database database, Scanner scan) throws IOException, ClassNotFoundException, RecipeNotFoundException {
+		System.out.print("Type \"abort\" or recipeID to select a recipe: ");
+		String input = scan.next();
+		if(input.equalsIgnoreCase("abort")) {
+			return;
+		}
+		Recipe foundRecipe = database.getRecipe(input);
+		System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\" or exit to main menu by \"abort\": ");
+		while(!input.equalsIgnoreCase("abort")) {
+			input = scan.next();
+			switch(input) {
+				case "step":
+					foundRecipe.displayNextStep();
+					break;
+				case "abort":
+					break;
+				default:
+					System.out.println("Unrecognized command.");
+					break;
+			}
+		}
+		return;
+
+	}
+
 	public static void addRecipe(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
 		String input = "";
 		Recipe recipe = new Recipe();
@@ -88,11 +114,13 @@ public class Handlers {
 			switch(input) {
 				case "1":
 					System.out.print("What is the title? ");
-					recipe.setTitle(scan.next());
+					scan.nextLine();
+					recipe.setTitle(scan.nextLine());
 					break;
 				case "2":
 					System.out.print("What is the subtitle? ");
-					recipe.setSubtitle(scan.next());
+					scan.nextLine();
+					recipe.setSubtitle(scan.nextLine());
 					break;
 				case "3":
 					System.out.println("What is the total serving size? (e.g. \"5 people\"): "); 
@@ -118,7 +146,7 @@ public class Handlers {
 						Quantity ingredientQuant = new Quantity(scan.nextInt(), scan.next());
 						System.out.print("What is the material? (e.g. 'salt'): ");
 						ingredientlist.add(new Ingredient(ingredientQuant, scan.next()));
-						System.out.print("Done? ");
+						System.out.print("Type done if finished: ");
 						ingredientsInput = scan.next();
 					}
 					recipe.setIngredients(ingredientlist);
@@ -128,10 +156,11 @@ public class Handlers {
 					ArrayList<Step> steps = new ArrayList<>();
 					String instructionsinput = "";
 					while(!instructionsinput.equalsIgnoreCase("done")) {
+						scan.nextLine();
 						instructionsinput = scan.nextLine();
 						Step step = new Step(instructionsinput);
 						steps.add(step);
-						System.out.print("Done? ");
+						System.out.print("Type done if finished: ");
 						instructionsinput = scan.next();
 					}
 					recipe.setInstructions(steps);

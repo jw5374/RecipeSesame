@@ -23,7 +23,6 @@ public class FileSystemDatabase extends Database {
 
 		for (File regularFile : folder.listFiles()) {
 			if (!regularFile.isDirectory()) {
-				String fileName = regularFile.getName();
 				recipes.add(Recipe.fromFile(regularFile.getName(), regularFile));
 			}
 		}
