@@ -22,7 +22,7 @@ public class Recipe implements Serializable {
 	private int cookTime;
 
 	private ArrayList<Step> instructions;
-
+	private int stepNum = 0;
 	public Recipe() {
 		this.id = Utils.randomID();
 	}
@@ -127,16 +127,23 @@ public class Recipe implements Serializable {
 			System.out.println((i+1)+ ". " + this.instructions.get(i).toString());
 		}
   }
-	
+	public void displayNextStep(){
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		System.out.println(this.instructions.get(stepNum).toString());
+		this.stepNum++;
+		if(this.stepNum >= this.instructions.size()){
+			this.stepNum = 0;
+		}
+	}
 	public String getDisplayInfo() {
 		String output = "";
-		
+
 		output += this.id + "\n";
 		output += this.title + "\n";
 		output += this.subtitle + "\n\n";
 		output += "Yields: " + this.servingSize + "\n";
 		output += "Time: " + (this.prepTime + this.cookTime) + " minutes\n";
-		
+
 		return output;
 
 	}
