@@ -17,7 +17,7 @@ public class Recipe {
 	private int cookTime;
 
 	private ArrayList<Step> instructions;
-	public int stepNum = 0;
+	private int stepNum = 0;
 	public Recipe() {
 		this.id = Utils.randomID();
 	}
@@ -116,13 +116,7 @@ public class Recipe {
 		}
   }
 	public void displayNextStep(){
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		System.out.println(this.instructions.get(stepNum).toString());
 		this.stepNum++;
 		if(this.stepNum >= this.instructions.size()){
