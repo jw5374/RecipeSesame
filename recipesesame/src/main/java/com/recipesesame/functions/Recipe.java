@@ -18,9 +18,7 @@ public class Recipe implements Serializable{
 
 	private ArrayList<Step> instructions;
 
-	public Recipe() {
-		this.id = UUID.randomUUID().toString();
-	}
+	public Recipe() { this.id = Utils.randomID(); }
 
 	public Recipe(String id) {
 		this.id = id;
