@@ -17,12 +17,12 @@ public class Handlers {
 		}
 	}
 	
-	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException {
+	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
 		printOutRecipes(recipes, out);
 	}
 	
-	public static void displayAllSortedRecipes(Database database, SortedBy sortKey, BufferedOutputStream out) throws IOException {
+	public static void displayAllSortedRecipes(Database database, SortedBy sortKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
 		
 		switch (sortKey) {
@@ -58,7 +58,7 @@ public class Handlers {
 		printOutRecipes(recipes, out);
 	}
 	
-	public static void searchAllRecipes(Database database, String searchKey, BufferedOutputStream out) throws IOException {
+	public static void searchAllRecipes(Database database, String searchKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
 		
 		recipes.removeIf(r -> !r.getTitle().toLowerCase().contains(searchKey.toLowerCase()));

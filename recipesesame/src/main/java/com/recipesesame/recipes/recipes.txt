@@ -1,1 +1,0 @@
-can either write objectoutputstream here or separate them into individual text files.

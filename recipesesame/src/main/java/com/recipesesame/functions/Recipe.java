@@ -5,7 +5,12 @@ import java.util.*;
 
 import com.recipesesame.utils.*;
 
-public class Recipe implements Serializable{
+public class Recipe implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String id;
 
 	private String title;
@@ -26,10 +31,17 @@ public class Recipe implements Serializable{
 		this.id = id;
 	}
 
-	public static Recipe fromFile(String id, File recipeFile) {
-		Recipe newRecipe = new Recipe(id);
+	public static Recipe fromFile(String id, File recipeFile) throws IOException, ClassNotFoundException {		
+		FileInputStream fileIn = new FileInputStream(recipeFile);
+		ObjectInputStream objIn = new ObjectInputStream(fileIn);
 
-		// parse recipe here
+		Recipe newRecipe = (Recipe) objIn.readObject();
+
+		//testing
+		System.out.println("Recipe ID: " + newRecipe.getId());
+		System.out.println("Recipe Title: " + newRecipe.getTitle());
+
+		objIn.close();
 
 		return newRecipe;
 	}
