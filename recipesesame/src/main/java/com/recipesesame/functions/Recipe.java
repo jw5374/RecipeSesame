@@ -15,6 +15,7 @@ public class Recipe implements Serializable {
 
 	private String title;
 	private String subtitle;
+	private ArrayList<String> tags;
 
 	private ArrayList<Ingredient> ingredients;
 	private Quantity servingSize;
@@ -36,10 +37,6 @@ public class Recipe implements Serializable {
 		ObjectInputStream objIn = new ObjectInputStream(fileIn);
 
 		Recipe newRecipe = (Recipe) objIn.readObject();
-
-		//testing
-		// System.out.println("Recipe ID: " + newRecipe.getId());
-		// System.out.println("Recipe Title: " + newRecipe.getTitle());
 
 		objIn.close();
 
@@ -68,6 +65,22 @@ public class Recipe implements Serializable {
 
 	public void setSubtitle(String subtitle) {
 		this.subtitle = subtitle;
+	}
+
+	public void addTag(String tag) {
+		this.tags.add(tag);
+	}
+
+	public void removeTag(int i) {
+		this.tags.remove(i);
+	}
+
+	public void clearTags() {
+		this.tags.clear();
+	}
+
+	public ArrayList<String> getTags() {
+		return this.tags;
 	}
 
 	public ArrayList<Ingredient> getIngredients() {
