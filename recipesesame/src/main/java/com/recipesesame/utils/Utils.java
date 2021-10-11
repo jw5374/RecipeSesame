@@ -1,7 +1,7 @@
 package com.recipesesame.utils;
 
 // import java.nio.charset.Charset;
-import java.util.Random;
+import java.util.UUID;
 
 public class Utils {
 	public static String randomID() {
@@ -10,6 +10,6 @@ public class Utils {
 		// new Random().nextBytes(array);
 		// String generatedString = new String(array, Charset.forName("UTF-8"));
 
-		return Integer.toString(new Random().nextInt(1000000000));
+		return UUID.randomUUID().toString().substring(0,7);
 	}
 }

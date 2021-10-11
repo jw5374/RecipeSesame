@@ -22,10 +22,10 @@ public class Recipe implements Serializable {
 	private int cookTime;
 
 	private ArrayList<Step> instructions;
+
 	private int stepNum = 0;
-	public Recipe() {
-		this.id = Utils.randomID();
-	}
+	public Recipe() { this.id = Utils.randomID(); }
+
 
 	public Recipe(String id) {
 		this.id = id;
