@@ -28,6 +28,7 @@ public class Main {
             switch(input) {
                 case "1":
                     Handlers.addRecipe(database, out, scan);
+                    recipes = database.getAllRecipes();
                     break;
                 case "2":
                     scan.nextLine();
