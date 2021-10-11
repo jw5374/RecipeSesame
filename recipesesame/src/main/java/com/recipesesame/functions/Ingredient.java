@@ -19,8 +19,16 @@ public final class Ingredient implements Serializable {
 		return this.quantity;
 	}
 
+	public void setQuantity(Quantity newQuant) {
+		this.quantity = newQuant;
+	}
+
 	public String getMaterial() {
 		return this.material;
+	}
+
+	public void setMaterial(String newMat) {
+		this.material = newMat;
 	}
 
 	@Override

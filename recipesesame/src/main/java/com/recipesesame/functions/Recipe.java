@@ -15,7 +15,7 @@ public class Recipe implements Serializable {
 
 	private String title;
 	private String subtitle;
-	private ArrayList<String> tags;
+	private ArrayList<String> tags = new ArrayList<>();
 
 	private ArrayList<Ingredient> ingredients;
 	private Quantity servingSize;
@@ -87,6 +87,14 @@ public class Recipe implements Serializable {
 		return this.ingredients;
 	}
 
+	public void addIngredient(Ingredient ingredient) {
+		this.ingredients.add(ingredient);
+	}
+
+	public void removeIngredient(int i) {
+		this.ingredients.remove(i);
+	}
+
 	public void setIngredients(ArrayList<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
@@ -123,6 +131,14 @@ public class Recipe implements Serializable {
 		this.instructions = instructions;
 	}
 
+	public void addInstruction(Step instruction) {
+		this.instructions.add(instruction);
+	}
+
+	public void removeInstruction(int i) {
+		this.instructions.remove(i);
+	}
+
 	public String displayAll() {
 		String output = "";
 		output += (this.id + "\n");
@@ -136,11 +152,17 @@ public class Recipe implements Serializable {
 				this.cookTime + "\n");
 		output += "Ingredients: \n";
 		for(int i=0; i<this.ingredients.size(); i++){
-			output += (this.ingredients.get(i).toString()+',' + "\n");
+			output += ((i + 1) + ". " + this.ingredients.get(i).toString() + "\n");
 		}
 		output += "Instructions: \n";
 		for(int i=0; i<this.instructions.size(); i++){
-			output += ((i+1)+ ". " + this.instructions.get(i).toString() + "\n");
+			output += ((i + 1) + ". " + this.instructions.get(i).toString() + "\n");
+		}
+		if(Objects.nonNull(this.tags)) {
+			output += "Tags: \n";
+			for(int i=0; i<this.tags.size(); i++){
+				output += ((i + 1) + ". " + this.tags.get(i).toString() + "\n");
+			}
 		}
 		return output;
   }
