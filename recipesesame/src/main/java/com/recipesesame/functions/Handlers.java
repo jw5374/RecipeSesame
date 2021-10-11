@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Scanner;
 
 import com.recipesesame.database.*;
@@ -18,14 +19,26 @@ public class Handlers {
 		out.flush();
 	}
 	
-	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException, ClassNotFoundException {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
-		printOutRecipes(recipes, out);
+	public static void displayAllRecipes(Database database,	ArrayList<Recipe> recipes, BufferedOutputStream out, Scanner scan) throws IOException, ClassNotFoundException {
+		out.write("You can display recipes sorted by TITLE, PREPTIME, COOKTIME, TOTALTIME, SERVINGSIZE or simply get all of them.\n".getBytes());
+		out.write("Type the corresponding sort key or \"all\": ".getBytes());
+		out.flush();
+		String sortKey = scan.next();
+		if(sortKey.equalsIgnoreCase("all")) {
+			printOutRecipes(recipes, out);
+		} else {
+			try {
+				SortedBy value = SortedBy.valueOf(sortKey.toUpperCase());
+				displayAllSortedRecipes(database, recipes, value, out);
+			} catch (IllegalArgumentException e) {
+				System.out.println("Wrong sort value.\n" + e.toString());
+				displayAllRecipes(database, recipes, out, scan);
+			}
+		}
+		return;
 	}
 	
-	public static void displayAllSortedRecipes(Database database, SortedBy sortKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
-		
+	public static void displayAllSortedRecipes(Database database, ArrayList<Recipe> recipes, SortedBy sortKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		switch (sortKey) {
 		case COOKTIME:
 			recipes.sort(Comparator.comparing(Recipe::getCookTime));
@@ -61,8 +74,12 @@ public class Handlers {
 	
 	public static void searchAllRecipes(Database database, String searchKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
-		
-		recipes.removeIf(r -> !r.getTitle().toLowerCase().contains(searchKey.toLowerCase()));
+		recipes.removeIf(r -> !(
+			(Objects.nonNull(r.getTitle()) && r.getTitle().toLowerCase().contains(searchKey.toLowerCase()))
+			|| (Objects.nonNull(r.getSubtitle()) && r.getSubtitle().toLowerCase().contains(searchKey.toLowerCase()))
+			|| (Objects.nonNull(r.getIngredients()) && r.getIngredients().removeIf(i -> i.getMaterial().toLowerCase().contains(searchKey.toLowerCase())))
+			|| (Objects.nonNull(r.getTags()) && r.getTags().contains(searchKey))
+		));
 
 		printOutRecipes(recipes, out);
 	}
@@ -73,20 +90,25 @@ public class Handlers {
 		if(input.equalsIgnoreCase("abort")) {
 			return;
 		}
-		Recipe foundRecipe = database.getRecipe(input);
-		System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\" or exit to main menu by \"abort\": ");
-		while(!input.equalsIgnoreCase("abort")) {
-			input = scan.next();
-			switch(input) {
-				case "step":
-					foundRecipe.displayNextStep();
-					break;
-				case "abort":
-					break;
-				default:
-					System.out.println("Unrecognized command.");
-					break;
+		try {
+			Recipe foundRecipe = database.getRecipe(input);
+			System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\" or exit to main menu by \"abort\": ");
+			while(!input.equalsIgnoreCase("abort")) {
+				input = scan.next();
+				switch(input) {
+					case "step":
+						foundRecipe.displayNextStep();
+						break;
+					case "abort":
+						break;
+					default:
+						System.out.println("Unrecognized command.");
+						break;
+				}
 			}
+		} catch (RecipeNotFoundException e) {
+			System.out.println("Invalid recipeID.");
+			exploreRecipes(database, scan);
 		}
 		return;
 

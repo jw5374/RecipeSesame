@@ -1,5 +1,6 @@
 package com.recipesesame;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -11,7 +12,8 @@ import com.recipesesame.utils.RecipeNotFoundException;
 public class Main {
     public static void main( String[] args ) throws IOException, ClassNotFoundException, RecipeNotFoundException {
         System.out.println(System.getProperty("user.dir"));
-        Database database = new FileSystemDatabase("src/main/java/com/recipesesame/recipes");
+        Database database = new FileSystemDatabase("RecipeSesame/recipesesame/src/main/java/com/recipesesame/recipes");
+        ArrayList<Recipe> recipes = database.getAllRecipes();
     	
         Scanner scan = new Scanner(System.in);
         BufferedOutputStream out = new BufferedOutputStream(System.out);
@@ -34,7 +36,7 @@ public class Main {
                 	Handlers.exploreRecipes(database, scan);
                     break;
                 case "3":
-                    Handlers.displayAllRecipes(database, out);
+                    Handlers.displayAllRecipes(database, recipes, out, scan);
                     Handlers.exploreRecipes(database, scan);
                     break;
                 case "exit":
