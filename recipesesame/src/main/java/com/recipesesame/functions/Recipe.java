@@ -15,6 +15,7 @@ public class Recipe implements Serializable {
 
 	private String title;
 	private String subtitle;
+	private ArrayList<String> tags = new ArrayList<>();
 
 	private ArrayList<Ingredient> ingredients;
 	private Quantity servingSize;
@@ -36,10 +37,6 @@ public class Recipe implements Serializable {
 		ObjectInputStream objIn = new ObjectInputStream(fileIn);
 
 		Recipe newRecipe = (Recipe) objIn.readObject();
-
-		//testing
-		// System.out.println("Recipe ID: " + newRecipe.getId());
-		// System.out.println("Recipe Title: " + newRecipe.getTitle());
 
 		objIn.close();
 
@@ -70,8 +67,32 @@ public class Recipe implements Serializable {
 		this.subtitle = subtitle;
 	}
 
+	public void addTag(String tag) {
+		this.tags.add(tag);
+	}
+
+	public void removeTag(int i) {
+		this.tags.remove(i);
+	}
+
+	public void clearTags() {
+		this.tags.clear();
+	}
+
+	public ArrayList<String> getTags() {
+		return this.tags;
+	}
+
 	public ArrayList<Ingredient> getIngredients() {
 		return this.ingredients;
+	}
+
+	public void addIngredient(Ingredient ingredient) {
+		this.ingredients.add(ingredient);
+	}
+
+	public void removeIngredient(int i) {
+		this.ingredients.remove(i);
 	}
 
 	public void setIngredients(ArrayList<Ingredient> ingredients) {
@@ -110,6 +131,14 @@ public class Recipe implements Serializable {
 		this.instructions = instructions;
 	}
 
+	public void addInstruction(Step instruction) {
+		this.instructions.add(instruction);
+	}
+
+	public void removeInstruction(int i) {
+		this.instructions.remove(i);
+	}
+
 	public String displayAll() {
 		String output = "";
 		output += (this.id + "\n");
@@ -123,11 +152,17 @@ public class Recipe implements Serializable {
 				this.cookTime + "\n");
 		output += "Ingredients: \n";
 		for(int i=0; i<this.ingredients.size(); i++){
-			output += (this.ingredients.get(i).toString()+',' + "\n");
+			output += ((i + 1) + ". " + this.ingredients.get(i).toString() + "\n");
 		}
 		output += "Instructions: \n";
 		for(int i=0; i<this.instructions.size(); i++){
-			output += ((i+1)+ ". " + this.instructions.get(i).toString() + "\n");
+			output += ((i + 1) + ". " + this.instructions.get(i).toString() + "\n");
+		}
+		if(Objects.nonNull(this.tags)) {
+			output += "Tags: \n";
+			for(int i=0; i<this.tags.size(); i++){
+				output += ((i + 1) + ". " + this.tags.get(i).toString() + "\n");
+			}
 		}
 		return output;
   }

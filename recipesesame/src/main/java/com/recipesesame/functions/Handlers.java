@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Scanner;
 
 import com.recipesesame.database.*;
@@ -18,14 +19,26 @@ public class Handlers {
 		out.flush();
 	}
 	
-	public static void displayAllRecipes(Database database, BufferedOutputStream out) throws IOException, ClassNotFoundException {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
-		printOutRecipes(recipes, out);
+	public static void displayAllRecipes(Database database,	ArrayList<Recipe> recipes, BufferedOutputStream out, Scanner scan) throws IOException, ClassNotFoundException {
+		out.write("You can display recipes sorted by TITLE, PREPTIME, COOKTIME, TOTALTIME, SERVINGSIZE or simply get all of them.\n".getBytes());
+		out.write("Type the corresponding sort key or \"all\": ".getBytes());
+		out.flush();
+		String sortKey = scan.next();
+		if(sortKey.equalsIgnoreCase("all")) {
+			printOutRecipes(recipes, out);
+		} else {
+			try {
+				SortedBy value = SortedBy.valueOf(sortKey.toUpperCase());
+				displayAllSortedRecipes(database, recipes, value, out);
+			} catch (IllegalArgumentException e) {
+				System.out.println("Wrong sort value.\n" + e.toString());
+				displayAllRecipes(database, recipes, out, scan);
+			}
+		}
+		return;
 	}
 	
-	public static void displayAllSortedRecipes(Database database, SortedBy sortKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
-		
+	public static void displayAllSortedRecipes(Database database, ArrayList<Recipe> recipes, SortedBy sortKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		switch (sortKey) {
 		case COOKTIME:
 			recipes.sort(Comparator.comparing(Recipe::getCookTime));
@@ -61,8 +74,12 @@ public class Handlers {
 	
 	public static void searchAllRecipes(Database database, String searchKey, BufferedOutputStream out) throws IOException, ClassNotFoundException {
 		ArrayList<Recipe> recipes = database.getAllRecipes();
-		
-		recipes.removeIf(r -> !r.getTitle().toLowerCase().contains(searchKey.toLowerCase()));
+		recipes.removeIf(r -> !(
+			(Objects.nonNull(r.getTitle()) && r.getTitle().toLowerCase().contains(searchKey.toLowerCase()))
+			|| (Objects.nonNull(r.getSubtitle()) && r.getSubtitle().toLowerCase().contains(searchKey.toLowerCase()))
+			|| (Objects.nonNull(r.getIngredients()) && r.getIngredients().removeIf(i -> i.getMaterial().toLowerCase().contains(searchKey.toLowerCase())))
+			|| (Objects.nonNull(r.getTags()) && r.getTags().contains(searchKey))
+		));
 
 		printOutRecipes(recipes, out);
 	}
@@ -73,20 +90,29 @@ public class Handlers {
 		if(input.equalsIgnoreCase("abort")) {
 			return;
 		}
-		Recipe foundRecipe = database.getRecipe(input);
-		System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\" or exit to main menu by \"abort\": ");
-		while(!input.equalsIgnoreCase("abort")) {
-			input = scan.next();
-			switch(input) {
-				case "step":
-					foundRecipe.displayNextStep();
-					break;
-				case "abort":
-					break;
-				default:
-					System.out.println("Unrecognized command.");
-					break;
+		try {
+			Recipe foundRecipe = database.getRecipe(input);
+			while(!input.equalsIgnoreCase("abort")) {
+				System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\"\nModify recipe with \"modify\"\nor exit to main menu by \"abort\": ");
+				input = scan.next();
+				switch(input.toLowerCase()) {
+					case "step":
+						recipeStepThrough(foundRecipe, scan);
+						break;
+					case "modify":
+						modifyRecipe(scan, foundRecipe);
+						break;
+					case "abort":
+						break;
+					default:
+						System.out.println("Unrecognized command.");
+						break;
+				}
 			}
+			database.writeRecipe(foundRecipe);
+		} catch (RecipeNotFoundException e) {
+			System.out.println("Invalid recipeID.");
+			exploreRecipes(database, scan);
 		}
 		return;
 
@@ -95,17 +121,17 @@ public class Handlers {
 	public static void addRecipe(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
 		String input = "";
 		Recipe recipe = new Recipe();
-		while(input.equalsIgnoreCase("finish") != true) {
-
+		while(!input.equalsIgnoreCase("finish")) {
 			out.write("Here you can add a recipe \n".getBytes());
-			out.write(("Please fill out all the following fields by typing the number\n or to finish writing the recipe type \"finish\", otherwise type \"abort\": \n" + 
+			out.write(("Please fill out all the following fields by typing the number\nor to finish writing the recipe type \"finish\", otherwise type \"abort\": \n" + 
 					"1. Title\n" + 
 					"2. Subtitle (flavor text)\n" +
 					"3. Serving Size\n" +
 					"4. Preparation time (a number in minutes)\n" + 
 					"5. Cook time (a number in minutes)\n" +
 					"6. Ingredients\n" + 
-					"7. Instructions\n").getBytes());
+					"7. Instructions\n" + 
+					"8. Tags\n").getBytes());
 			out.flush();
 			input = scan.next();
 			if(input.equalsIgnoreCase("abort")) {
@@ -139,15 +165,16 @@ public class Handlers {
 					System.out.println("What are the ingredients? ");
 					String ingredientsInput = "";
 					ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-					while(ingredientsInput.equalsIgnoreCase("done") != true) {
+					while(!ingredientsInput.equalsIgnoreCase("done")) {
 						out.write("Your ingredient is composed of a quantity and material\n".getBytes());
 						out.write("What is the quantity? (e.g. \"1 tablespoon\"): ".getBytes());
 						out.flush();
 						Quantity ingredientQuant = new Quantity(scan.nextInt(), scan.next());
+						scan.nextLine();
 						System.out.print("What is the material? (e.g. 'salt'): ");
-						ingredientlist.add(new Ingredient(ingredientQuant, scan.next()));
+						ingredientlist.add(new Ingredient(ingredientQuant, scan.nextLine()));
 						System.out.print("Type done if finished: ");
-						ingredientsInput = scan.next();
+						ingredientsInput = scan.nextLine();
 					}
 					recipe.setIngredients(ingredientlist);
 					break;
@@ -155,15 +182,26 @@ public class Handlers {
 					System.out.println("What are the instructions? ");
 					ArrayList<Step> steps = new ArrayList<>();
 					String instructionsinput = "";
+					scan.nextLine();
 					while(!instructionsinput.equalsIgnoreCase("done")) {
-						scan.nextLine();
 						instructionsinput = scan.nextLine();
 						Step step = new Step(instructionsinput);
 						steps.add(step);
 						System.out.print("Type done if finished: ");
-						instructionsinput = scan.next();
+						instructionsinput = scan.nextLine();
 					}
 					recipe.setInstructions(steps);
+					break;
+				case "8":
+					System.out.println("What are the tags? ");
+					String tagsinput = "";
+					scan.nextLine();
+					while(!tagsinput.equalsIgnoreCase("done")) {
+						tagsinput = scan.nextLine();
+						recipe.addTag(tagsinput);
+						System.out.print("Type done if finished: ");
+						tagsinput = scan.nextLine();
+					}
 					break;
 				default:
 					System.out.println("Unrecognized field/command".getBytes());
@@ -171,4 +209,124 @@ public class Handlers {
 		}
 		database.writeRecipe(recipe);
 	}
+
+	public static void modifyRecipe(Scanner scan, Recipe recipe) {
+		String input = "";
+		while(!input.equalsIgnoreCase("abort")) {
+			System.out.print("You can modify all displayed fields.\nPlease type title, subtitle, servingsize, preptime, cooktime\ntags, instructions, ingredients, or abort: ");
+			input = scan.next();
+			switch(input.toLowerCase()) {
+				case "title":
+					System.out.print("Type new title: ");
+					scan.nextLine();
+					recipe.setTitle(scan.nextLine());
+					break;
+				case "subtitle":
+					System.out.print("Type new sub title: ");
+					scan.nextLine();
+					recipe.setSubtitle(scan.nextLine());
+					break;
+				case "servingsize":
+					System.out.print("Type new serving size (e.g. 5 people): ");
+					recipe.setServingSize(new Quantity(scan.nextInt(), scan.next()));
+					break;
+				case "preptime":
+					System.out.print("Type new preparation time (in minutes): ");
+					recipe.setPrepTime(scan.nextInt());
+					break;
+				case "cooktime":
+					System.out.print("Type new cooking time (in minutes): ");
+					recipe.setCookTime(scan.nextInt());
+					break;
+				case "tags":
+					String taginput = "";
+					scan.nextLine();
+					while(!taginput.equalsIgnoreCase("done")) {
+						System.out.print("Type the number of the tag to remove, a new tag to add, or \"cleartags\" to clear all tags\n(e.g. 1, or \"delicious\"): ");
+						taginput = scan.nextLine();
+						if(taginput.equalsIgnoreCase("cleartags")) {
+							recipe.clearTags();
+							break;
+						}
+						try {
+							int index = Integer.parseInt(taginput) - 1;
+							recipe.removeTag(index);
+							System.out.println(recipe.displayAll());
+						} catch (NumberFormatException nfe) {
+							recipe.addTag(taginput);
+						}
+						System.out.print("Type done if finished: ");
+						taginput = scan.nextLine();
+					}
+					break;
+				case "instructions":
+					System.out.print("To add an instruction type \"add\", otherwise type the number to edit: ");
+					String instructionsinput = scan.next();
+					if(instructionsinput.equalsIgnoreCase("add")) {
+						scan.nextLine();
+						while(!instructionsinput.equalsIgnoreCase("done")) {
+							System.out.print("Type instruction to add: ");
+							instructionsinput = scan.nextLine();
+							recipe.addInstruction(new Step(instructionsinput));
+							System.out.print("Type done if finished: ");
+							instructionsinput = scan.nextLine();
+						}
+					} else {
+						scan.nextLine();
+						int index = Integer.parseInt(instructionsinput) - 1;
+						System.out.print("To modify type the new instruction, otherwise type \"remove\": ");
+						instructionsinput = scan.nextLine();
+						if(instructionsinput.equalsIgnoreCase("remove")) {
+							recipe.removeInstruction(index);
+						} else {
+							recipe.getInstructions().set(index, new Step(instructionsinput));
+						}
+					}
+					break;
+				case "ingredients":
+					System.out.print("To add an ingredient type \"add\", otherwise type the number to edit: ");
+					String ingredientsinput = scan.next();
+					if(ingredientsinput.equalsIgnoreCase("add")) {
+						while(!ingredientsinput.equalsIgnoreCase("done")) {
+							System.out.print("Your ingredient is composed of a quantity and material\nWhat is the quantity? (e.g. \"1 tablespoon\"): ");
+							Quantity ingredientQuant = new Quantity(scan.nextInt(), scan.next());
+							System.out.print("What is the material? (e.g. 'salt'): ");
+							recipe.addIngredient(new Ingredient(ingredientQuant, scan.next()));
+							scan.nextLine();
+							System.out.print("Type done if finished: ");
+							ingredientsinput = scan.nextLine();
+						}
+					} else {
+						scan.nextLine();
+						int index = Integer.parseInt(ingredientsinput) - 1;
+						System.out.print("To modify type the new ingredient, otherwise type \"remove\": ");
+						ingredientsinput = scan.nextLine();
+						if(ingredientsinput.equalsIgnoreCase("remove")) {
+							recipe.removeIngredient(index);
+						} else {
+							System.out.print("Your ingredient is composed of a quantity and material\nWhat is the quantity? (e.g. \"1 tablespoon\"): ");
+							Quantity ingredientQuant = new Quantity(scan.nextInt(), scan.next());
+							System.out.print("What is the material? (e.g. 'salt'): ");
+							recipe.getIngredients().set(index, new Ingredient(ingredientQuant, scan.next()));
+						}
+					}
+					break;
+				case "abort":
+					break;
+				default:
+					System.out.println("Unrecognized command.");
+			}
+		}
+	}
+
+	public static void recipeStepThrough(Recipe recipe, Scanner scan) {
+		String stepinput = "";
+		scan.nextLine();
+		do {
+			recipe.displayNextStep();
+			System.out.print("Type done at any time: ");
+			stepinput = scan.nextLine();
+		} while(!stepinput.equalsIgnoreCase("done"));
+	}
+	
 }
