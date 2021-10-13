@@ -90,8 +90,7 @@ public class Handlers {
 		printOutRecipes(recipes, out);
 	}
 
-	public static void getRandomRecipe(Database database) throws IOException, ClassNotFoundException {
-		ArrayList<Recipe> recipes = database.getAllRecipes();
+	public static void getRandomRecipe(Database database, ArrayList<Recipe> recipes) throws IOException, ClassNotFoundException {
 		int random = (int) ((double) (recipes.size() - 1)  * Math.random());
 		String randomId = recipes.get(random).getId();
 
