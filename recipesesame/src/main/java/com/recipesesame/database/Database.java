@@ -12,4 +12,6 @@ public abstract class Database {
 	public abstract Recipe getRecipe(String id) throws RecipeNotFoundException, ClassNotFoundException, IOException;
 
 	public abstract boolean writeRecipe(Recipe recipe);
+
+	public abstract String getPath();
 }

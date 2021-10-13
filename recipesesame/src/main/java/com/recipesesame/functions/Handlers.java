@@ -137,7 +137,7 @@ public class Handlers {
 
 	public static void addRecipesFromFolder(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
 
-		File folder = new File("recipesesame/src/main/java/com/recipesesame/recipes/addrecipes");
+		File folder = new File(database.getPath() + "/addrecipes");
 
 		if (folder.listFiles().length < 1) System.out.println("\nThere is no file!");
 		else {
@@ -185,6 +185,7 @@ public class Handlers {
 						database.writeRecipe(newRecipe);
 			
 						reader.close();
+						regularFile.delete();
 					} catch (Exception e) {
 						System.out.println("Error reading a file... try again.");
 						addRecipe(database, out, scan);
