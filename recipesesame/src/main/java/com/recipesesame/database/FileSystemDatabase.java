@@ -63,4 +63,9 @@ public class FileSystemDatabase extends Database {
 		}
 
 	}
+
+	@Override
+	public String getPath(){
+		return folder.getPath();
+	}
 }

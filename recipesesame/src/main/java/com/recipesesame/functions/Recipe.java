@@ -160,7 +160,7 @@ public class Recipe implements Serializable {
 			output += ((i + 1) + ". " + this.instructions.get(i).toString() + "\n");
 		}
 		if(Objects.nonNull(this.tags)) {
-			output += "Tags: \n";
+			output += "\nTags: \n";
 			for(int i=0; i<this.tags.size(); i++){
 				output += ((i + 1) + ". " + this.tags.get(i).toString() + "\n");
 			}
