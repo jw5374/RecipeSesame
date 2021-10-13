@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Scanner;
+import java.io.File;
 
 import com.recipesesame.database.*;
 import com.recipesesame.utils.RecipeNotFoundException;
@@ -134,60 +135,64 @@ public class Handlers {
 
 	}
 
-	public static void addRecipeFromFile(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
-		out.write("File path: ".getBytes());
-		out.flush();
+	public static void addRecipesFromFolder(Database database, BufferedOutputStream out, Scanner scan) throws IOException {
 
-		String filePath = scan.nextLine();
-		
-		try{
-			BufferedReader reader = new BufferedReader(new FileReader(filePath));
-			Recipe newRecipe = new Recipe();
+		File folder = new File("recipesesame/src/main/java/com/recipesesame/recipes/addrecipes");
 
-			newRecipe.setTitle(reader.readLine());
-			newRecipe.setSubtitle(reader.readLine());
-
-			String[] readServing = reader.readLine().split("[ ]");
-			Quantity servingSize = new Quantity(Integer.parseInt(readServing[0]), readServing[1]);
-			newRecipe.setServingSize(servingSize);
-
-			newRecipe.setPrepTime(Integer.parseInt(reader.readLine()));
-			newRecipe.setCookTime(Integer.parseInt(reader.readLine()));
-
-			String readerInput = "";
-			ArrayList<Ingredient> ingredientlist = new ArrayList<>();
-			while(!readerInput.equalsIgnoreCase("done")) {
-				String[] readQuantity = reader.readLine().split("[ ]", 2);
-				Quantity quantity = new Quantity(Integer.parseInt(readQuantity[0]), readQuantity[1]);
-				ingredientlist.add(new Ingredient(quantity, reader.readLine()));
-				readerInput = reader.readLine();
+		if (folder.listFiles().length < 1) System.out.println("\nThere is no file!");
+		else {
+			System.out.println("adding recipe(s)...");
+			for (File regularFile : folder.listFiles()) {
+				if (!regularFile.isDirectory()) {
+					try{
+						BufferedReader reader = new BufferedReader(new FileReader(regularFile));
+						Recipe newRecipe = new Recipe();
+			
+						newRecipe.setTitle(reader.readLine());
+						newRecipe.setSubtitle(reader.readLine());
+			
+						String[] readServing = reader.readLine().split("[ ]");
+						Quantity servingSize = new Quantity(Integer.parseInt(readServing[0]), readServing[1]);
+						newRecipe.setServingSize(servingSize);
+			
+						newRecipe.setPrepTime(Integer.parseInt(reader.readLine()));
+						newRecipe.setCookTime(Integer.parseInt(reader.readLine()));
+			
+						String readerInput = "";
+						ArrayList<Ingredient> ingredientlist = new ArrayList<>();
+						while(!readerInput.equalsIgnoreCase("done")) {
+							String[] readQuantity = reader.readLine().split("[ ]", 2);
+							Quantity quantity = new Quantity(Integer.parseInt(readQuantity[0]), readQuantity[1]);
+							ingredientlist.add(new Ingredient(quantity, reader.readLine()));
+							readerInput = reader.readLine();
+						}
+			
+						newRecipe.setIngredients(ingredientlist);
+						readerInput = "";
+						ArrayList<Step> steps = new ArrayList<>();
+						while(!readerInput.equalsIgnoreCase("done")) {
+							Step step = new Step(reader.readLine());
+							steps.add(step);
+							readerInput = reader.readLine();
+						}
+						newRecipe.setInstructions(steps);
+						readerInput = "";
+						while(!readerInput.equalsIgnoreCase("done")) {
+							newRecipe.addTag(reader.readLine());
+							readerInput = reader.readLine();
+						}
+			
+						database.writeRecipe(newRecipe);
+			
+						reader.close();
+					} catch (Exception e) {
+						System.out.println("Error reading a file... try again.");
+						addRecipe(database, out, scan);
+					}
+				}
 			}
-
-			newRecipe.setIngredients(ingredientlist);
-			readerInput = "";
-			ArrayList<Step> steps = new ArrayList<>();
-			while(!readerInput.equalsIgnoreCase("done")) {
-				Step step = new Step(reader.readLine());
-				steps.add(step);
-				readerInput = reader.readLine();
-			}
-			newRecipe.setInstructions(steps);
-			readerInput = "";
-			while(!readerInput.equalsIgnoreCase("done")) {
-				newRecipe.addTag(reader.readLine());
-				readerInput = reader.readLine();
-			}
-
-			database.writeRecipe(newRecipe);
-
-			reader.close();
-		} catch (FileNotFoundException e){
-			System.out.println("Could not find file... try again.");
-			addRecipe(database, out, scan);
-		} catch (IllegalArgumentException e) {
-			System.out.println("Error reading file... try again.");
-			addRecipe(database, out, scan);
 		}
+
 
 	}
 
@@ -195,13 +200,13 @@ public class Handlers {
 		String answer = "";
 		scan.nextLine();
 		while (!answer.equalsIgnoreCase("yes") && !answer.equalsIgnoreCase("no")){
-			out.write("Do you want to submit a file? (yes/no) \n".getBytes());
+			out.write("Do you want to add from addrecipes folder? (yes/no) \n".getBytes());
 			out.flush();
 			answer = scan.nextLine();
 		}
 
 		if (answer.equalsIgnoreCase("yes")){
-			addRecipeFromFile(database, out, scan);
+			addRecipesFromFolder(database, out, scan);
 		}
 		else{
 			String input = "";

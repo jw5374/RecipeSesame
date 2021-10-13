@@ -11,16 +11,12 @@ import com.recipesesame.utils.RecipeNotFoundException;
 
 public class Main {
     public static void main( String[] args ) throws IOException, ClassNotFoundException, RecipeNotFoundException {
-        // System.out.println(System.getProperty("user.dir"));
+        System.out.println(System.getProperty("user.dir"));
+        Database database = new FileSystemDatabase("recipesesame/src/main/java/com/recipesesame/recipes");
+        ArrayList<Recipe> recipes = database.getAllRecipes();
+    	
         Scanner scan = new Scanner(System.in);
         BufferedOutputStream out = new BufferedOutputStream(System.out);
-
-        System.out.print("Your recipe folder path: ");
-        String filePath = scan.nextLine();
-        Database database = new FileSystemDatabase(filePath);
-
-        ArrayList<Recipe> recipes = database.getAllRecipes();
-
         String input = "";
         while(input.equalsIgnoreCase("exit") != true) {
             out.write("\nWelcome to Recipe Sesame!\n".getBytes());
