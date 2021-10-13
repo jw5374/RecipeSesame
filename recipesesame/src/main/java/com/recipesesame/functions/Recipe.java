@@ -141,20 +141,21 @@ public class Recipe implements Serializable {
 
 	public String displayAll() {
 		String output = "";
-		output += (this.id + "\n");
+		output += ("--------------------\n\n");
+		output += ("ID: "+ this.id + "\n\n");
 		output += (this.title + "\n");
 		output += (this.subtitle + "\n");
-		output += ("Serves: " + 
+		output += ("\nServes: " + 
 				this.servingSize + 
-				"		Prep Time: " + 
-				this.prepTime + 
-				"		Cook Time: " + 
-				this.cookTime + "\n");
-		output += "Ingredients: \n";
+				"\nPrep Time: " + 
+				this.prepTime + " minutes" + 
+				"\nCook Time: " +
+				this.cookTime + " minutes\n");
+		output += "\nIngredients: \n";
 		for(int i=0; i<this.ingredients.size(); i++){
 			output += ((i + 1) + ". " + this.ingredients.get(i).toString() + "\n");
 		}
-		output += "Instructions: \n";
+		output += "\nInstructions: \n";
 		for(int i=0; i<this.instructions.size(); i++){
 			output += ((i + 1) + ". " + this.instructions.get(i).toString() + "\n");
 		}
@@ -164,6 +165,7 @@ public class Recipe implements Serializable {
 				output += ((i + 1) + ". " + this.tags.get(i).toString() + "\n");
 			}
 		}
+		output += ("\n--------------------\n");
 		return output;
   }
 	public void displayNextStep(){
