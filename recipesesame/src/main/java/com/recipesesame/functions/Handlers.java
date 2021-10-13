@@ -14,16 +14,19 @@ import com.recipesesame.utils.RecipeNotFoundException;
 public class Handlers {
 	private static void printOutRecipes(ArrayList<Recipe> recipes, BufferedOutputStream out) throws IOException {
 		out.write(("--------------------\n").getBytes());
+		out.write(("-     (￣﹃￣)     -\n").getBytes());
+		out.write(("--------------------\n").getBytes());
 		for (int i = 0; i < recipes.size(); i++) {
 			out.write(("\n"+ recipes.get(i).getDisplayInfo() + "\n").getBytes());
-			out.write(("-----(￣﹃￣)-----\n").getBytes());
+			out.write(("--------------------\n").getBytes());
 		}
-		out.write(("\n--------------------\n").getBytes());
+		out.write(("-     (￣﹃￣)     -\n").getBytes());
+		out.write(("--------------------\n").getBytes());
 		out.flush();
 	}
 	
 	public static void displayAllRecipes(Database database,	ArrayList<Recipe> recipes, BufferedOutputStream out, Scanner scan) throws IOException, ClassNotFoundException {
-		out.write("You can display recipes sorted by TITLE, PREPTIME, COOKTIME, TOTALTIME, SERVINGSIZE or simply get all of them.\n".getBytes());
+		out.write("\nYou can display recipes sorted by TITLE, PREPTIME, COOKTIME, TOTALTIME, SERVINGSIZE or simply get all of them.\n".getBytes());
 		out.write("Type the corresponding sort key or \"all\": ".getBytes());
 		out.flush();
 		String sortKey = scan.next();
@@ -87,6 +90,14 @@ public class Handlers {
 		printOutRecipes(recipes, out);
 	}
 
+	public static void getRandomRecipe(Database database) throws IOException, ClassNotFoundException {
+		ArrayList<Recipe> recipes = database.getAllRecipes();
+		int random = (int) ((double) (recipes.size() - 1)  * Math.random());
+		String randomId = recipes.get(random).getId();
+
+		System.out.println("\nHere's a random recipe id: " + randomId + "\nEnter it in below and have fun!\n");
+	}
+
 	public static void exploreRecipes(Database database, Scanner scan) throws IOException, ClassNotFoundException, RecipeNotFoundException {
 		System.out.print("Type \"abort\" or recipeID to select a recipe: ");
 		String input = scan.next();
@@ -96,7 +107,7 @@ public class Handlers {
 		try {
 			Recipe foundRecipe = database.getRecipe(input);
 			while(!input.equalsIgnoreCase("abort")) {
-				System.out.print(foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\"\nModify recipe with \"modify\"\nor exit to main menu by \"abort\": ");
+				System.out.print("\n" + foundRecipe.displayAll() + "\n" + "Step through instructions by typing \"step\"\nModify recipe with \"modify\"\nor exit to main menu by \"abort\": ");
 				input = scan.next();
 				switch(input.toLowerCase()) {
 					case "step":
