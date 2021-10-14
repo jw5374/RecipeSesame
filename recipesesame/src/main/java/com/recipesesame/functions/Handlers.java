@@ -60,9 +60,10 @@ public class Handlers {
 			Collections.sort(recipes, (recipe1, recipe2) -> {
 				return Integer.compare(
 					recipe1.getCookTime() + recipe1.getPrepTime(), 
-					recipe2.getCookTime() + recipe1.getPrepTime()
+					recipe2.getCookTime() + recipe2.getPrepTime()
 				); 
 			});
+			break;
 		case SERVINGSIZE:
 			Collections.sort(recipes, (recipe1, recipe2) -> {
 				return Integer.compare(
